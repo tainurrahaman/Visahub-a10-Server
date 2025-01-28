@@ -21,6 +21,8 @@ const client = new MongoClient(uri, {
 });
 
 const userCollection = client.db("UsersDB").collection("users");
+const visaCollection = client.db("VisasDB").collection("visas");
+const visaApplyCollection = client.db("VisasDB").collection("visaApply");
 
 async function run() {
   try {
@@ -28,6 +30,8 @@ async function run() {
     // await client.connect();
     // Send a ping to confirm a successful connection
     // await client.db("admin").command({ ping: 1 });
+
+    // Users APIs
 
     app.get("/users", async (req, res) => {
       const cursor = userCollection.find();
@@ -53,6 +57,26 @@ async function run() {
         },
       };
       const result = await userCollection.updateOne(filter, updatedData);
+      res.send(result);
+    });
+
+    // Visa's APIs
+
+    app.get("/visas", async (req, res) => {
+      const cursor = visaCollection.find();
+      const result = await cursor.toArray();
+      res.send(result);
+    });
+
+    app.post("/visas", async (req, res) => {
+      const newVisa = req.body;
+      const result = await visaCollection.insertOne(newVisa);
+      res.send(result);
+    });
+
+    app.post("/visaApply", async (req, res) => {
+      const newVisaApply = req.body;
+      const result = await visaApplyCollection.insertOne(newVisaApply);
       res.send(result);
     });
 
