@@ -48,7 +48,6 @@ async function run() {
     app.patch("/users", async (req, res) => {
       const email = req.body.email;
       const loginData = req.body;
-      console.log(loginData);
       const filter = { email };
       const updatedData = {
         $set: {
@@ -64,6 +63,12 @@ async function run() {
 
     app.get("/visas", async (req, res) => {
       const cursor = visaCollection.find();
+      const result = await cursor.toArray();
+      res.send(result);
+    });
+
+    app.get("/visaApply", async (req, res) => {
+      const cursor = visaApplyCollection.find();
       const result = await cursor.toArray();
       res.send(result);
     });
