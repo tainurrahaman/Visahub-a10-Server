@@ -1,7 +1,7 @@
 require("dotenv").config();
 const express = require("express");
 const cors = require("cors");
-const { MongoClient, ServerApiVersion } = require("mongodb");
+const { MongoClient, ServerApiVersion, ObjectId } = require("mongodb");
 
 const app = express();
 const port = process.env.PORT || 5000;
@@ -61,16 +61,29 @@ async function run() {
 
     // Visa's APIs
 
+    // Get all Visa's Data
+
     app.get("/visas", async (req, res) => {
       const cursor = visaCollection.find();
       const result = await cursor.toArray();
       res.send(result);
     });
 
+    // Get visa Application data using specific email
+
     app.get("/visaApply", async (req, res) => {
       const { email } = req.query;
       const result = await visaApplyCollection.find({ email }).toArray();
       res.json(result);
+    });
+
+    // Get visa Application data using ID
+
+    app.get("/visaApply/:id", async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: new ObjectId(id) };
+      const result = await visaApplyCollection.findOne(query);
+      res.send(result);
     });
 
     app.post("/visas", async (req, res) => {
@@ -82,6 +95,15 @@ async function run() {
     app.post("/visaApply", async (req, res) => {
       const newVisaApply = req.body;
       const result = await visaApplyCollection.insertOne(newVisaApply);
+      res.send(result);
+    });
+
+    // Delete visa Application using ID(single visa)
+
+    app.delete("/visaApply/:id", async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: new ObjectId(id) };
+      const result = await visaApplyCollection.deleteOne(query);
       res.send(result);
     });
 
