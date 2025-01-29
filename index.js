@@ -68,9 +68,9 @@ async function run() {
     });
 
     app.get("/visaApply", async (req, res) => {
-      const cursor = visaApplyCollection.find();
-      const result = await cursor.toArray();
-      res.send(result);
+      const { email } = req.query;
+      const result = await visaApplyCollection.find({ email }).toArray();
+      res.json(result);
     });
 
     app.post("/visas", async (req, res) => {
