@@ -69,9 +69,17 @@ async function run() {
       res.send(result);
     });
 
-    // Get visa Application data using specific email
+    // Get visa Application Form data using user's email
 
     app.get("/visaApply", async (req, res) => {
+      const { email } = req.query;
+      const result = await visaApplyCollection.find({ email }).toArray();
+      res.json(result);
+    });
+
+    // Get Country visa data added by user using user's email
+
+    app.get("/visas", async (req, res) => {
       const { email } = req.query;
       const result = await visaApplyCollection.find({ email }).toArray();
       res.json(result);
