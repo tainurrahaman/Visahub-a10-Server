@@ -61,6 +61,23 @@ async function run() {
 
     // Visa's APIs
 
+    // Get Country visa data added by user using user's email
+
+    app.get("/visas", async (req, res) => {
+      const { email } = req.query;
+      const result = await visaCollection.find({ email }).toArray();
+      res.json(result);
+    });
+
+    // Get visa data using ID
+
+    app.get("/visas/:id", async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: new ObjectId(id) };
+      const result = await visaCollection.findOne(query);
+      res.send(result);
+    });
+
     // Get all Visa's Data
 
     app.get("/visas", async (req, res) => {
@@ -69,17 +86,9 @@ async function run() {
       res.send(result);
     });
 
-    // Get visa Application Form data using user's email
+    // Get visa Application From data using user's email
 
     app.get("/visaApply", async (req, res) => {
-      const { email } = req.query;
-      const result = await visaApplyCollection.find({ email }).toArray();
-      res.json(result);
-    });
-
-    // Get Country visa data added by user using user's email
-
-    app.get("/visas", async (req, res) => {
       const { email } = req.query;
       const result = await visaApplyCollection.find({ email }).toArray();
       res.json(result);
@@ -106,12 +115,42 @@ async function run() {
       res.send(result);
     });
 
+    // Update Visa Data using their Id
+
+    app.patch("/visas/:id", async (req, res) => {
+      const id = req.params.id;
+      const visaData = req.body;
+      const filter = { _id: new ObjectId(id) };
+      const updateVisa = {
+        $set: {
+          method: visaData.method,
+          fee: visaData.fee,
+          name: visaData.name,
+          photo: visaData.photo,
+          visa: visaData.visa,
+          time: visaData.time,
+          validity: visaData.validity,
+        },
+      };
+      const result = await visaCollection.updateOne(filter, updateVisa);
+      res.send(result);
+    });
+
     // Delete visa Application using ID(single visa)
 
     app.delete("/visaApply/:id", async (req, res) => {
       const id = req.params.id;
       const query = { _id: new ObjectId(id) };
       const result = await visaApplyCollection.deleteOne(query);
+      res.send(result);
+    });
+
+    // Delete Added visa using ID(single visa)
+
+    app.delete("/visas/:id", async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: new ObjectId(id) };
+      const result = await visaCollection.deleteOne(query);
       res.send(result);
     });
 
