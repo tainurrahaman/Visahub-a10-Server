@@ -121,30 +121,83 @@ async function run() {
 
     // Visa's APIs
 
-    // Get Country visa data added by user using user's email
+    // Get all visas (without filters)
+    app.get("/visas/all", async (req, res) => {
+      const result = await visaCollection.find().toArray();
+      res.json(result);
+    });
 
+    // Get latest 6 visas
+    app.get("/visas/latest", async (req, res) => {
+      const result = await visaCollection
+        .find()
+        .sort({ _id: -1 })
+        .limit(6)
+        .toArray();
+      res.json(result);
+    });
+
+    // Get visas added by a specific user (using email)
     app.get("/visas", async (req, res) => {
       const { email } = req.query;
+      if (!email) {
+        return res.status(400).json({ error: "Email is required!" });
+      }
       const result = await visaCollection.find({ email }).toArray();
       res.json(result);
     });
 
-    // Get visa data using ID
-
+    // Get visa details using ID
     app.get("/visas/:id", async (req, res) => {
-      const id = req.params.id;
-      const query = { _id: new ObjectId(id) };
-      const result = await visaCollection.findOne(query);
-      res.send(result);
+      try {
+        const id = req.params.id;
+        const query = { _id: new ObjectId(id) };
+        const result = await visaCollection.findOne(query);
+
+        if (!result) {
+          return res.status(404).json({ error: "Visa not found!" });
+        }
+
+        res.json(result);
+      } catch (error) {
+        res.status(500).json({ error: "Invalid ID format!" });
+      }
     });
 
-    // Get all Visa's Data
+    // // Get Country visa data added by user using user's email
 
-    app.get("/visas", async (req, res) => {
-      const cursor = visaCollection.find();
-      const result = await cursor.toArray();
-      res.send(result);
-    });
+    // app.get("/visas", async (req, res) => {
+    //   const { email } = req.query;
+    //   const result = await visaCollection.find({ email }).toArray();
+    //   res.json(result);
+    // });
+
+    // // Get visa data using ID
+
+    // app.get("/visas/:id", async (req, res) => {
+    //   const id = req.params.id;
+    //   const query = { _id: new ObjectId(id) };
+    //   const result = await visaCollection.findOne(query);
+    //   res.send(result);
+    // });
+
+    // // Get all Visa's Data
+
+    // app.get("/visas", async (req, res) => {
+    //   const cursor = visaCollection.find();
+    //   const result = await cursor.toArray();
+    //   res.send(result);
+    // });
+
+    // // Get latest 6 visas
+    // app.get("/visas/latest", async (req, res) => {
+    //   const result = await visaCollection
+    //     .find()
+    //     .sort({ _id: -1 })
+    //     .limit(6)
+    //     .toArray();
+    //   res.json(result);
+    // });
 
     // Get visa Application From data using user's email
 
