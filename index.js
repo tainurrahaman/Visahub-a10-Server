@@ -84,41 +84,6 @@ async function run() {
       res.send(result);
     });
 
-    // async function run() {
-    //   try {
-    //     // Connect the client to the server	(optional starting in v4.7)
-    //     // await client.connect();
-    //     // Send a ping to confirm a successful connection
-    //     // await client.db("admin").command({ ping: 1 });
-
-    //     // Users APIs
-
-    //     app.get("/users", async (req, res) => {
-    //       const cursor = userCollection.find();
-    //       const result = await cursor.toArray();
-    //       res.send(result);
-    //     });
-
-    //     app.post("/users", async (req, res) => {
-    //       const newUser = req.body;
-    //       const result = await userCollection.insertOne(newUser);
-    //       res.send(result);
-    //     });
-
-    //     app.patch("/users", async (req, res) => {
-    //       const email = req.body.email;
-    //       const loginData = req.body;
-    //       const filter = { email };
-    //       const updatedData = {
-    //         $set: {
-    //           creationTime: loginData.creationTime,
-    //           lastSignInTime: loginData.lastSignInTime,
-    //         },
-    //       };
-    //       const result = await userCollection.updateOne(filter, updatedData);
-    //       res.send(result);
-    //     });
-
     // Visa's APIs
 
     // Get all visas (without filters)
@@ -148,7 +113,7 @@ async function run() {
     });
 
     // Get visa details using ID
-    app.get("/visas/:id", async (req, res) => {
+    app.get("/visas/all/:id", async (req, res) => {
       try {
         const id = req.params.id;
         const query = { _id: new ObjectId(id) };
@@ -230,7 +195,7 @@ async function run() {
 
     // Update Visa Data using their Id
 
-    app.patch("/visas/:id", async (req, res) => {
+    app.patch("/visas/all/:id", async (req, res) => {
       const id = req.params.id;
       const visaData = req.body;
       const filter = { _id: new ObjectId(id) };
