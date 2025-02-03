@@ -100,9 +100,7 @@ async function run() {
     // Get visas added by a specific user (using email)
     app.get("/visas", async (req, res) => {
       const { email } = req.query;
-      if (!email) {
-        return res.status(400).json({ error: "Email is required!" });
-      }
+
       const result = await visaCollection.find({ email }).toArray();
       res.json(result);
     });
